@@ -211,6 +211,7 @@ Add the following:
 ```
 
 Save and quit with `:wq`
+
 ---
 
 ## Step 8 — (Optionally) install Nerd Font
