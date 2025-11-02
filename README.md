@@ -193,7 +193,3 @@ You now have:
 *  **Commenting, surround, autopairs**
 *  **Git integration with Gitsigns + Fugitive**
 *  **Status bar (Lualine)**
-
----
-
-Would you like me to give you a **bonus optional Step 9** — adding *Telescope* (VS Code-style fuzzy file search, like Ctrl + P)? It’s a great next upgrade.
