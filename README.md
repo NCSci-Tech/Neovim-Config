@@ -168,10 +168,52 @@ These are language-server “extensions” like VS Code’s.
 | `gd`, `gr`, `<leader>rn` | Go-to-def, references, rename (COC) |             |
 
 Autocompletion pops up automatically as you type.
+---
+## Step 7 - CocConfig
+Inside nvim:
 
+```vim
+:CocConfig
+```
+Add the following:
+
+```vim
+{
+  // ------------------------
+  // Format settings
+  // ------------------------
+  "coc.preferences.formatOnSaveFiletypes": ["c", "cpp"],  // format only on save
+  "coc.preferences.formatOnType": false,                  // stops "format:" messages while typing
+
+  // ------------------------
+  // Completion & suggestions
+  // ------------------------
+  "suggest.noselect": false,
+  "suggest.enablePreselect": true,
+
+  // ------------------------
+  // Diagnostics (errors/warnings)
+  // ------------------------
+  "diagnostic.enable": true,          // enable LSP diagnostics
+  "diagnostic.virtualText": true,     // show inline text for warnings/errors
+  "diagnostic.checkCurrentLine": true, 
+  "diagnostic.displayByAle": false,   // optional if ALE is installed
+
+  // ------------------------
+  // Clangd (C/C++ LSP)
+  // ------------------------
+  "clangd.arguments": [
+    "--background-index",
+    "--cross-file-rename"
+  ]
+}
+
+```
+
+Save and quit with `:wq`
 ---
 
-## Step 7 — (Optionally) install Nerd Font
+## Step 8 — (Optionally) install Nerd Font
 
 Icons in the file tree and statusline need a patched font.
 
@@ -182,7 +224,7 @@ Install it, then set your terminal to use it.
 
 ---
 
-## Step 8 — Enjoy VS Code-level comfort in Neovim
+## Step 9 — Enjoy VS Code-level comfort in Neovim
 
 You now have:
 
