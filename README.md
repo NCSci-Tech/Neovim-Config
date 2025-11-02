@@ -1,6 +1,6 @@
 # Neovim-Config
 
-## Step 1 — Install Neovim
+## Step 1 - Install Neovim
 
 ### Linux
 
@@ -30,9 +30,11 @@ nvim --version
 
 You should see something like `NVIM v0.9.x` or newer.
 
+I also had to install nodejs and npm for this to fully work, which can be installed with the methods above!
+
 ---
 
-## Step 2 — Install `vim-plug` (for Neovim)
+## Step 2 - Install `vim-plug` (for Neovim)
 
 ```bash
 curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
@@ -41,7 +43,7 @@ curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
 
 ---
 
-## Step 3 — Create your `init.vim`
+## Step 3 - Create your `init.vim`
 
 ```bash
 mkdir -p ~/.config/nvim
@@ -124,7 +126,7 @@ Save and quit with `:wq`.
 
 ---
 
-## Step 4 — Install the plugins
+## Step 4 - Install the plugins
 
 Start Neovim:
 
@@ -142,7 +144,7 @@ Let it finish downloading everything.
 
 ---
 
-## Step 5 — Enable language support (COC)
+## Step 5 - Enable language support (COC)
 
 Inside Neovim, run:
 
@@ -154,7 +156,7 @@ These are language-server “extensions” like VS Code’s.
 
 ---
 
-## Step 6 — Use it
+## Step 6 - Use it
 
 | Action                   | Key / Command                       | Description |
 | ------------------------ | ----------------------------------- | ----------- |
@@ -214,7 +216,7 @@ Save and quit with `:wq`
 
 ---
 
-## Step 8 — (Optionally) install Nerd Font
+## Step 8 - (Optionally) install Nerd Font
 
 Icons in the file tree and statusline need a patched font.
 
@@ -225,7 +227,7 @@ Install it, then set your terminal to use it.
 
 ---
 
-## Step 9 — Enjoy VS Code-level comfort in Neovim
+## Step 9 - Enjoy VS Code-level comfort in Neovim
 
 You now have:
 
@@ -236,3 +238,7 @@ You now have:
 *  **Commenting, surround, autopairs**
 *  **Git integration with Gitsigns + Fugitive**
 *  **Status bar (Lualine)**
+
+## Disclaimer
+
+I'm fairly new to using neovim so be warned this is not perfect and may require extra configuration! May need to run CocInstall coc-json
