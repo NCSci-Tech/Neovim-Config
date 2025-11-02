@@ -241,4 +241,6 @@ You now have:
 
 ## Disclaimer
 
-I'm fairly new to using neovim so be warned this is not perfect and may require extra configuration! May need to run CocInstall coc-json
+I'm fairly new to using neovim so be warned this is not perfect and may require extra configuration! May need to run the following inside neovim: ```vim
+:CocInstall coc-json
+```
