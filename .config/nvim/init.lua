@@ -75,9 +75,10 @@ require("lazy").setup({
   -- Covers: c, cpp, python, bash, asm (via asm/nasm grammars)
   {
     "nvim-treesitter/nvim-treesitter",
-    build = ":TSUpdate",
-    config = function()
-      require("nvim-treesitter.configs").setup({
+      branch = 'master',
+      build = ":TSUpdate",
+      config = function()
+      require("nvim-treesitter.config").setup({
         ensure_installed = { "c", "cpp", "python", "bash", "asm", "lua", "vim" },
         auto_install = true,
         highlight = { enable = true },
