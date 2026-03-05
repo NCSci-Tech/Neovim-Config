@@ -1,7 +1,7 @@
 -- ~/.config/nvim/init.lua
--- Neovim configuration for C/C++, Assembly, and Binary work
+-- Focused config: C/C++, Python, Bash, Assembly, Hex/Binary
 
--- Bootstrap lazy.nvim plugin manager
+-- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
@@ -13,10 +13,11 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- Basic settings
+-- Leader
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
+-- Basic settings
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.mouse = "a"
@@ -38,6 +39,7 @@ vim.opt.scrolloff = 8
 
 -- Plugins
 require("lazy").setup({
+
   -- Color scheme
   {
     "folke/tokyonight.nvim",
@@ -46,18 +48,18 @@ require("lazy").setup({
       vim.cmd([[colorscheme tokyonight-night]])
     end,
   },
-
-  -- File tree
+  
+  -- nvim tree
   {
-    "nvim-tree/nvim-tree.lua",
-    dependencies = { "nvim-tree/nvim-web-devicons" },
-    config = function()
-      require("nvim-tree").setup({
-        view = { width = 30 },
-        filters = { custom = { "^.git$" } },
-        git = { ignore = false },
-      })
-    end,
+  "nvim-tree/nvim-tree.lua",
+  dependencies = { "nvim-tree/nvim-web-devicons" },
+  config = function()
+    require("nvim-tree").setup({
+      view = { width = 30 },
+      filters = { custom = { "^.git$" } },
+      git = { ignore = false },
+    })
+  end,
   },
 
   -- Fuzzy finder
@@ -69,13 +71,14 @@ require("lazy").setup({
     end,
   },
 
-  -- Syntax highlighting
+  -- Syntax highlighting + indentation
+  -- Covers: c, cpp, python, bash, asm (via asm/nasm grammars)
   {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
     config = function()
       require("nvim-treesitter.configs").setup({
-        ensure_installed = { "c", "cpp", "lua", "vim", "python", "bash" },
+        ensure_installed = { "c", "cpp", "python", "bash", "asm", "lua", "vim" },
         auto_install = true,
         highlight = { enable = true },
         indent = { enable = true },
@@ -83,7 +86,9 @@ require("lazy").setup({
     end,
   },
 
-  -- LSP Configuration
+  -- LSP + Mason (installs language servers automatically)
+  -- Servers: clangd (C/C++), pyright (Python), bashls (Bash)
+  -- Note: no LSP for assembly — use Treesitter highlighting only
   {
     "neovim/nvim-lspconfig",
     dependencies = {
@@ -94,12 +99,12 @@ require("lazy").setup({
     config = function()
       require("mason").setup()
       require("mason-lspconfig").setup({
-        ensure_installed = { "clangd" },
+        ensure_installed = { "clangd", "pyright", "bashls" },
       })
 
       local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-      -- C/C++ LSP
+      -- C/C++: autocomplete, diagnostics, go-to-def, clang-tidy linting
       vim.lsp.config.clangd = {
         cmd = {
           "clangd",
@@ -110,18 +115,57 @@ require("lazy").setup({
           "--function-arg-placeholders=true",
         },
         filetypes = { "c", "cpp", "objc", "objcpp", "cuda" },
-        root_markers = { ".clangd", ".clang-tidy", ".clang-format", "compile_commands.json", "compile_flags.txt", "configure.ac", ".git" },
+        root_markers = {
+          ".clangd", ".clang-tidy", ".clang-format",
+          "compile_commands.json", "compile_flags.txt", ".git",
+        },
         capabilities = capabilities,
       }
 
-      -- Enable LSP for filetypes
-      vim.lsp.enable({ "clangd" })
+      -- Python: autocomplete, type checking, diagnostics
+      vim.lsp.config.pyright = {
+        cmd = { "pyright-langserver", "--stdio" },
+        filetypes = { "python" },
+        root_markers = {
+          "pyproject.toml", "setup.py", "setup.cfg",
+          "requirements.txt", ".git",
+        },
+        settings = {
+          python = {
+            analysis = {
+              typeCheckingMode = "basic",
+              autoSearchPaths = true,
+              useLibraryCodeForTypes = true,
+            },
+          },
+        },
+        capabilities = capabilities,
+      }
 
-      -- Keybindings
-      vim.keymap.set("n", "gd", vim.lsp.buf.definition, { desc = "Go to definition" })
-      vim.keymap.set("n", "K", vim.lsp.buf.hover, { desc = "Hover documentation" })
-      vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, { desc = "Rename" })
-      vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "Code action" })
+      -- Bash: autocomplete, diagnostics, shellcheck integration
+      vim.lsp.config.bashls = {
+        cmd = { "bash-language-server", "start" },
+        filetypes = { "sh", "bash" },
+        root_markers = { ".git" },
+        settings = {
+          bashIde = {
+            -- Requires shellcheck installed separately: `sudo apt install shellcheck`
+            enableSourceErrorDiagnostics = true,
+          },
+        },
+        capabilities = capabilities,
+      }
+
+      vim.lsp.enable({ "clangd", "pyright", "bashls" })
+
+      -- LSP keybindings
+      vim.keymap.set("n", "gd",         vim.lsp.buf.definition,    { desc = "Go to definition" })
+      vim.keymap.set("n", "K",          vim.lsp.buf.hover,         { desc = "Hover docs" })
+      vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename,        { desc = "Rename symbol" })
+      vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action,   { desc = "Code action" })
+      vim.keymap.set("n", "<leader>d",  vim.diagnostic.open_float, { desc = "Show diagnostic" })
+      vim.keymap.set("n", "[d",         vim.diagnostic.goto_prev,  { desc = "Prev diagnostic" })
+      vim.keymap.set("n", "]d",         vim.diagnostic.goto_next,  { desc = "Next diagnostic" })
     end,
   },
 
@@ -147,24 +191,16 @@ require("lazy").setup({
         },
         mapping = cmp.mapping.preset.insert({
           ["<C-Space>"] = cmp.mapping.complete(),
-          ["<CR>"] = cmp.mapping.confirm({ select = true }),
+          ["<CR>"]      = cmp.mapping.confirm({ select = true }),
           ["<Tab>"] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.select_next_item()
-            elseif luasnip.expand_or_jumpable() then
-              luasnip.expand_or_jump()
-            else
-              fallback()
-            end
+            if cmp.visible() then cmp.select_next_item()
+            elseif luasnip.expand_or_jumpable() then luasnip.expand_or_jump()
+            else fallback() end
           end, { "i", "s" }),
           ["<S-Tab>"] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.select_prev_item()
-            elseif luasnip.jumpable(-1) then
-              luasnip.jump(-1)
-            else
-              fallback()
-            end
+            if cmp.visible() then cmp.select_prev_item()
+            elseif luasnip.jumpable(-1) then luasnip.jump(-1)
+            else fallback() end
           end, { "i", "s" }),
         }),
         sources = {
@@ -188,21 +224,16 @@ require("lazy").setup({
     end,
   },
 
-  -- Git integration
+  -- Git signs in gutter
   { "lewis6991/gitsigns.nvim", config = true },
 
-  -- Comment toggling
+  -- Comment toggling (gcc / gc in visual)
   { "numToStr/Comment.nvim", config = true },
 
-  -- Auto pairs
-  {
-    "windwp/nvim-autopairs",
-    config = function()
-      require("nvim-autopairs").setup({})
-    end,
-  },
+  -- Auto pairs for brackets/quotes
+  { "windwp/nvim-autopairs", config = true },
 
-  -- Hex editor for binary files
+  -- Hex viewer for binary files (.bin, .elf, .o, .exe)
   {
     "RaafatTurki/hex.nvim",
     config = function()
@@ -211,17 +242,17 @@ require("lazy").setup({
   },
 })
 
--- Key mappings
+-- General keymaps
 vim.keymap.set("n", "<leader>e", ":NvimTreeToggle<CR>", { desc = "Toggle file tree" })
 vim.keymap.set("n", "<leader>ff", ":Telescope find_files<CR>", { desc = "Find files" })
-vim.keymap.set("n", "<leader>fg", ":Telescope live_grep<CR>", { desc = "Live grep" })
-vim.keymap.set("n", "<leader>fb", ":Telescope buffers<CR>", { desc = "Find buffers" })
-vim.keymap.set("n", "<C-h>", "<C-w>h", { desc = "Move to left window" })
-vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "Move to bottom window" })
-vim.keymap.set("n", "<C-k>", "<C-w>k", { desc = "Move to top window" })
-vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Move to right window" })
+vim.keymap.set("n", "<leader>fg", ":Telescope live_grep<CR>",  { desc = "Live grep" })
+vim.keymap.set("n", "<leader>fb", ":Telescope buffers<CR>",    { desc = "Find buffers" })
+vim.keymap.set("n", "<C-h>", "<C-w>h", { desc = "Window left" })
+vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "Window down" })
+vim.keymap.set("n", "<C-k>", "<C-w>k", { desc = "Window up" })
+vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Window right" })
 
--- Assembly specific settings
+-- Assembly: tabs instead of spaces, wider indent (common convention)
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "asm", "nasm" },
   callback = function()
@@ -231,7 +262,7 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
--- Auto-open hex view for binary files
+-- Auto hex view for binary file types
 vim.api.nvim_create_autocmd("BufReadPost", {
   pattern = { "*.bin", "*.exe", "*.elf", "*.o" },
   callback = function()
