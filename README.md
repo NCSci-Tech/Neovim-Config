@@ -2,7 +2,7 @@
 
 A minimal Neovim config with:
 
-* LSP (C/C++, Python, Bash)
+* LSP (C/C++, Python, Bash) With errors/warnings
 * Autocomplete (nvim-cmp)
 * Treesitter
 * File explorer
@@ -62,3 +62,4 @@ sudo pacman -S ttf-jetbrains-mono-nerd  # icons/font
 | Next suggestion     | `Tab`          |
 | Previous suggestion | `Shift + Tab`  |
 | Confirm             | `Enter`        |
+| Diagnostic          | `<leader>d`    |
