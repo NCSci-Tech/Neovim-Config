@@ -1,7 +1,5 @@
 # Neovim-Config
 
----
-
 A minimal Neovim config with:
 
 * LSP (C/C++, Python, Bash)
