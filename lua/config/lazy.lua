@@ -72,13 +72,14 @@ require("lazy").setup({
   -- Treesitter
   {
     "nvim-treesitter/nvim-treesitter",
+    branch = "master",
     build = ":TSUpdate",
     config = function()
       local ok, configs = pcall(require, "nvim-treesitter.configs")
       if not ok then return end
 
       configs.setup({
-        ensure_installed = { "c", "cpp", "python", "bash", "lua" },
+        ensure_installed = { "c", "cpp", "python", "bash", "lua", "asm" },
         highlight = { enable = true },
         indent = { enable = true },
       })
