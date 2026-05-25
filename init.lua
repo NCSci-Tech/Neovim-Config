@@ -1,19 +1,23 @@
--- leader key
+-- Leader Key
 vim.g.mapleader = " "
 
--- basic settings
+-- Basic Settings
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.termguicolors = true
 
--- Tab stuff
+-- Tab Stuff
 vim.opt.expandtab = true
 vim.opt.shiftwidth = 4
 vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
 
--- diagnostics module
+-- Indentation
+vim.opt.autoindent = true
+vim.opt.smartindent = true
+
+-- Diagnostics Module
 require("config.diagnostics").setup()
 
--- load lazy
+-- Load Lazy
 require("config.lazy")
