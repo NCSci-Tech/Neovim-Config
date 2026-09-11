@@ -14,7 +14,8 @@ vim.opt.softtabstop = 4
 
 -- Indentation
 vim.opt.autoindent = true
-vim.opt.smartindent = true
+vim.opt.smartindent = false
+vim.opt.cindent = true
 
 -- Diagnostics Module
 require("config.diagnostics").setup()
