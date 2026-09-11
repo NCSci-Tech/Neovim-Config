@@ -81,8 +81,11 @@ require("lazy").setup({
       configs.setup({
         ensure_installed = { "c", "cpp", "python", "bash", "lua", "asm" },
         highlight = { enable = true },
-        indent = { enable = true },
-      })
+        indent = { 
+            enable = true,
+            disable = { "c", "cpp" },
+        },
+    })
     end,
   },
 
